@@ -19,5 +19,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // キャリアQカード用の質問をシード
+        $this->call([
+            QuestionSeeder::class,
+        ]);
     }
 }
