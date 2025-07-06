@@ -234,18 +234,6 @@ docker-compose exec backend php artisan cache:clear
 docker-compose exec frontend rm -rf .next
 ```
 
-## ライセンス
-
-このプロジェクトはMITライセンスの下で公開されています。
-
-## 貢献
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/AmazingFeature`)
-3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
-4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
-5. プルリクエストを作成
-
 ## 今後の機能予定
 
 - [ ] GPTによるAIフィードバック機能
@@ -254,6 +242,3 @@ docker-compose exec frontend rm -rf .next
 - [ ] 回答の検索・フィルタリング機能
 - [ ] 回答統計のグラフ表示
 - [ ] ソーシャル機能（回答の共有）
-- [ ] モバイルアプリ対応
-- [ ] 通知機能
-- [ ] 多言語対応
