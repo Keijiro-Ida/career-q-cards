@@ -84,25 +84,43 @@ class User extends Authenticatable
      */
     public function getStreakDays()
     {
-        $answers = $this->answers()
+        // ユニークな回答日を降順で取得
+        $answerDates = $this->answers()
             ->orderBy('answered_date', 'desc')
-            ->pluck('answered_date')
-            ->map(fn($date) => $date->format('Y-m-d'))
+            ->get()
+            ->map(function ($answer) {
+                return $answer->answered_date instanceof \Carbon\Carbon
+                    ? $answer->answered_date->format('Y-m-d')
+                    : $answer->answered_date;
+            })
             ->unique()
-            ->values();
+            ->values()
+            ->toArray();
 
-        if ($answers->isEmpty()) {
+        if (empty($answerDates)) {
             return 0;
         }
 
         $streak = 0;
-        $currentDate = now()->format('Y-m-d');
+        $today = now()->format('Y-m-d');
+        $yesterday = now()->subDay()->format('Y-m-d');
 
-        foreach ($answers as $answerDate) {
-            if ($answerDate === $currentDate) {
+        // 今日の回答があるかチェック
+        $startDate = in_array($today, $answerDates) ? $today : $yesterday;
+
+        // 開始日が今日でも昨日でもない場合、連続日数は0
+        if (!in_array($startDate, $answerDates)) {
+            return 0;
+        }
+
+        // 連続日数をカウント
+        $currentDate = \Carbon\Carbon::parse($startDate);
+        foreach ($answerDates as $answerDate) {
+            if ($answerDate === $currentDate->format('Y-m-d')) {
                 $streak++;
-                $currentDate = now()->subDays($streak)->format('Y-m-d');
-            } else {
+                $currentDate->subDay();
+            } else if ($answerDate < $currentDate->format('Y-m-d')) {
+                // 日付が飛んだら終了
                 break;
             }
         }
